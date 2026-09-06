@@ -1,7 +1,6 @@
 <!doctype html>
 <html itemscope itemtype="http://schema.org/WebPage" lang="en" class="no-js" data-theme-init>
   <head>
-	<meta name="generator" content="Hugo 0.165.0">
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -32,21 +31,17 @@
 </script>
 <meta name="robots" content="index, follow">
 
-<title>Goal</title>
-<meta name="description" content="Versioned goal resources, local storage, and agent workflow">
-<meta property="og:url" content="/">
+<title>404 Page not found | Goal</title>
+<meta name="description" content="">
+<meta property="og:url" content="/404.html">
 	<meta property="og:site_name" content="Goal">
-	<meta property="og:title" content="Goal">
-	<meta property="og:description" content="Versioned goal resources, local storage, and agent workflow">
+	<meta property="og:title" content="404 Page not found">
 	<meta property="og:locale" content="en">
 	<meta property="og:type" content="website">
 
-	<meta itemprop="name" content="Goal">
-	<meta itemprop="description" content="Versioned goal resources, local storage, and agent workflow">
-	<meta itemprop="wordCount" content="370">
+	<meta itemprop="name" content="404 Page not found">
 	<meta name="twitter:card" content="summary">
-	<meta name="twitter:title" content="Goal">
-	<meta name="twitter:description" content="Versioned goal resources, local storage, and agent workflow">
+	<meta name="twitter:title" content="404 Page not found">
 <link rel="preload" href="/scss/main.min.8f0680d136cc9695b0ad0e99d08675b9835bbc1b0b99eda42af2f5baac89c013.css" as="style" integrity="sha256-jwaA0TbMlpWwrQ6Z0IZ1uYNbvBsLme2kKvL1uqyJwBM=" crossorigin="anonymous">
 <link href="/scss/main.min.8f0680d136cc9695b0ad0e99d08675b9835bbc1b0b99eda42af2f5baac89c013.css" rel="stylesheet" integrity="sha256-jwaA0TbMlpWwrQ6Z0IZ1uYNbvBsLme2kKvL1uqyJwBM=" crossorigin="anonymous">
 <script
@@ -55,7 +50,7 @@
   crossorigin="anonymous"></script>
 
   </head>
-  <body class="td-home">
+  <body class="td-404">
     <header>
       <nav class="td-navbar js-navbar-scroll">
 <div class="td-navbar-container container-fluid flex-column flex-md-row">
@@ -132,64 +127,10 @@
     </header>
     <div class="container-fluid td-default td-outer">
       <main role="main" class="td-main">
-        
-<section class="row">
-  <div class="col">
-    <div class="container td-content landing-content">
-      <h1>Goal</h1>
-      
-      <p class="lead">Versioned goal resources, local storage, and agent workflow</p>
-       
-      <p class="text-body-secondary">Built with go, markdown, bzl.</p>
-       <p>This project owns the goal execution skill and the deterministic local store
-that supports it. Ordinary tasks use <code>init</code> for the objective and acceptance,
-<code>checkpoint --summary --subject --next-action</code> for local progress, and <code>show</code>
-for bounded continuation. The store derives IDs and digests while retaining
-explicit resource-version checks. Detailed attempt plans and histories remain
-available for maintained goals, repeated failures, and complex coordination.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>projects/goal/
-</span></span><span style="display:flex;"><span>  api/v1alpha1/      Portable resource types and domain validation
-</span></span><span style="display:flex;"><span>  cmd/goal/          Cobra command wiring and command tests
-</span></span><span style="display:flex;"><span>  docs/              Current architecture and generated diagrams
-</span></span><span style="display:flex;"><span>  internal/fsstore/  Local persistence, per-goal locking, and store tests
-</span></span><span style="display:flex;"><span>  skills/goal/       Model-facing execution protocol and evaluations
-</span></span></code></pre></div><p>Go dependencies flow from <code>cmd/goal</code> to <code>internal/fsstore</code> to
-<code>api/v1alpha1</code>. The API package has no filesystem or command dependency.
-The Go toolchain is Bazel&rsquo;s <code>@rules_go//go</code>; run the package targets below
-rather than a host-installed <code>go</code>.</p>
-<p>The command stores Kubernetes-inspired <code>goals.alwaldend.com/v1alpha1</code> YAML
-resources and canonical, digest-bound attempt Markdown in ordinary repository
-files. Each <code>attempt.yaml</code> binds <code>plan.md</code>, <code>result.md</code>, and <code>evidence/*.md</code> by
-SHA-256. <code>Goal.status.plans</code> records durable plans with one active plan at a
-time and states <code>active</code>, <code>accepted</code>, <code>rejected</code>, or <code>superseded</code>; attempts can
-bind to a plan with <code>spec.planID</code>. Each goal record&rsquo;s <code>README.md</code> is a generated, bounded,
-replaceable projection. The portable API treats resource versions as opaque
-and excludes local ownership paths from desired state. The filesystem backend
-supplies one cooperative lock per goal, local numeric resource versions,
-atomic file replacement by sibling temporary-file rename, session bindings,
-promotion, non-destructive unversioned-record import, and recoverable
-multi-file publication. Before a multi-file mutation, the backend stages exact
-after-images and installs a <code>.goal-publication.yaml</code> intent in the goal
-record; <code>goal doctor</code> classifies the publication state and <code>goal recover</code>
-replays or discards a pending intent. It is a local file editor with atomic
-per-file replacement; it does not claim cross-file transaction semantics
-without the publication intent.</p>
-<p>These files are not installed CRDs. A future Kubernetes adapter can convert
-the API types after adding Kubernetes metadata types, structural schemas,
-status-subresource behavior, generated runtime methods, and reconciliation of
-API-server-owned metadata.</p>
-<p>Run the command through Bazel:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>bazel_agent bazel run //projects/goal/cmd/goal -- --help
-</span></span></code></pre></div><p>Diagnose and finish an interrupted publication:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>bazel_agent bazel run //projects/goal/cmd/goal -- doctor --goal-dir $GOAL_DIR
-</span></span><span style="display:flex;"><span>bazel_agent bazel run //projects/goal/cmd/goal -- recover --goal-dir $GOAL_DIR
-</span></span></code></pre></div><p>The canonical skill lives at <code>skills/goal</code>; <code>.agents/skills/goal</code> is only its
-repository discovery symlink.</p>
-
-    </div>
-  </div>
-</section>
-
+        <div class="td-content">
+  <h1>Not found</h1>
+  <p>Oops! This page doesn't exist. Try going back to the <a href="/">home page</a>.</p>
+</div>
       </main>
       <footer class="td-footer row d-print-none">
   <div class="container-fluid">
