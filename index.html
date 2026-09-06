@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta name="generator" content="Hugo 0.165.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Goal</title>
+    
+    <meta name="description" content="Versioned goal resources, local storage, and agent workflow" />
+     
+    <meta name="github-repo" content="https://github.com/alwaldend/src" />
+      
+    <link rel="stylesheet" href="/scss/landing.min.757a78e91e368eeac2f0cb4833153359a2f027c8e1ec3cf51681f3f623b018da.css" />
+     
+  </head>
+  <body>
+    <header class="landing-topbar">
+      <a class="landing-brand" href="/">Goal</a>
+      <nav class="landing-nav" aria-label="Project links">
+        
+        <a href="https://alwaldend.com/docs/projects/goal/">Docs</a>
+        
+        <a href="https://github.com/alwaldend/src">Github</a>
+        
+      </nav>
+    </header>
+    <main class="landing-container">
+      <div class="landing-header">
+        <h1>Goal</h1>
+        <div class="btn-group" role="group" aria-label="Project links">
+          
+          <a class="btn btn-outline-primary" href="https://alwaldend.com/docs/projects/goal/">Docs</a>
+          
+          <a class="btn btn-outline-primary" href="https://github.com/alwaldend/src">Github</a>
+          
+        </div>
+      </div>
+      
+      <p class="landing-description">Versioned goal resources, local storage, and agent workflow</p>
+       
+      <p class="landing-meta">Built with go, markdown, bzl.</p>
+      
+      <div class="landing-readme"><p>This project owns the goal execution skill and the deterministic local store
+that supports it. Ordinary tasks use <code>init</code> for the objective and acceptance,
+<code>checkpoint --summary --subject --next-action</code> for local progress, and <code>show</code>
+for bounded continuation. The store derives IDs and digests while retaining
+explicit resource-version checks. Detailed attempt plans and histories remain
+available for maintained goals, repeated failures, and complex coordination.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>projects/goal/
+</span></span><span style="display:flex;"><span>  api/v1alpha1/      Portable resource types and domain validation
+</span></span><span style="display:flex;"><span>  cmd/goal/          Cobra command wiring and command tests
+</span></span><span style="display:flex;"><span>  docs/              Current architecture and generated diagrams
+</span></span><span style="display:flex;"><span>  internal/fsstore/  Local persistence, per-goal locking, and store tests
+</span></span><span style="display:flex;"><span>  skills/goal/       Model-facing execution protocol and evaluations
+</span></span></code></pre></div><p>Go dependencies flow from <code>cmd/goal</code> to <code>internal/fsstore</code> to
+<code>api/v1alpha1</code>. The API package has no filesystem or command dependency.
+The Go toolchain is Bazel&rsquo;s <code>@rules_go//go</code>; run the package targets below
+rather than a host-installed <code>go</code>.</p>
+<p>The command stores Kubernetes-inspired <code>goals.alwaldend.com/v1alpha1</code> YAML
+resources and canonical, digest-bound attempt Markdown in ordinary repository
+files. Each <code>attempt.yaml</code> binds <code>plan.md</code>, <code>result.md</code>, and <code>evidence/*.md</code> by
+SHA-256. <code>Goal.status.plans</code> records durable plans with one active plan at a
+time and states <code>active</code>, <code>accepted</code>, <code>rejected</code>, or <code>superseded</code>; attempts can
+bind to a plan with <code>spec.planID</code>. Each goal record&rsquo;s <code>README.md</code> is a generated, bounded,
+replaceable projection. The portable API treats resource versions as opaque
+and excludes local ownership paths from desired state. The filesystem backend
+supplies one cooperative lock per goal, local numeric resource versions,
+atomic file replacement by sibling temporary-file rename, session bindings,
+promotion, non-destructive unversioned-record import, and recoverable
+multi-file publication. Before a multi-file mutation, the backend stages exact
+after-images and installs a <code>.goal-publication.yaml</code> intent in the goal
+record; <code>goal doctor</code> classifies the publication state and <code>goal recover</code>
+replays or discards a pending intent. It is a local file editor with atomic
+per-file replacement; it does not claim cross-file transaction semantics
+without the publication intent.</p>
+<p>These files are not installed CRDs. A future Kubernetes adapter can convert
+the API types after adding Kubernetes metadata types, structural schemas,
+status-subresource behavior, generated runtime methods, and reconciliation of
+API-server-owned metadata.</p>
+<p>Run the command through Bazel:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>bazel_agent bazel run //projects/goal/cmd/goal -- --help
+</span></span></code></pre></div><p>Diagnose and finish an interrupted publication:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>bazel_agent bazel run //projects/goal/cmd/goal -- doctor --goal-dir $GOAL_DIR
+</span></span><span style="display:flex;"><span>bazel_agent bazel run //projects/goal/cmd/goal -- recover --goal-dir $GOAL_DIR
+</span></span></code></pre></div><p>The canonical skill lives at <code>skills/goal</code>; <code>.agents/skills/goal</code> is only its
+repository discovery symlink.</p>
+</div>
+    </main>
+    <footer class="landing-footer">
+      <p>Generated from the project README.</p>
+    </footer>
+  </body>
+</html>
